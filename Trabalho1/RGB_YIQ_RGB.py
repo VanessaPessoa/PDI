@@ -2,7 +2,7 @@ import numpy as np
 
 class RGB_YIQ_RGB:
     def RGB_TO_YIQ(self, np_image):
-        yiq = np.zeros(shape=(33,44, 3))
+        yiq = np.zeros(np_image.shape)
         for x in range(0, np_image.shape[0]):
             for y in range(0, np_image.shape[1]):
                 R = np_image[x, y][0]
@@ -15,9 +15,8 @@ class RGB_YIQ_RGB:
                 Q = (0.211 * R) - (0.523 * G) + (0.312 * B)
                 
                 yiq[x, y] = (Y, I, Q)
-        
-        return yiq
 
+        return yiq
 
     def limit_pixelRGB(self, pixel):
         if pixel > 255:
@@ -29,7 +28,7 @@ class RGB_YIQ_RGB:
         return pixel
 
     def YIQ_TO_RGB(self, np_image):
-        rgb = np.zeros(shape=(33,44, 3))
+        rgb = np.zeros(np_image.shape)
         for x in range(0, np_image.shape[0]):
             for y in range(0, np_image.shape[1]):
                 Y = np_image[x, y][0]

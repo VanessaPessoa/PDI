@@ -2,7 +2,7 @@ import numpy as np
 
 class BRG_RGB_BRG:
     def BRG_TO_RGB(self, np_image):
-        rgb = np.zeros(shape=(33, 44, 3))
+        rgb = np.zeros(np_image.shape)
         for x in range(0, np_image.shape[0]):
             for y in range(0, np_image.shape[1]):
                 R = np_image[x, y][2]
@@ -12,7 +12,7 @@ class BRG_RGB_BRG:
         return rgb
 
     def RGB_TO_BRG(self, np_image):
-        brg = np.zeros(shape=(33, 44, 3))
+        brg = np.zeros(np_image.shape)
         for x in range(0, np_image.shape[0]):
             for y in range(0, np_image.shape[1]):
                 R = np_image[x, y][0]
