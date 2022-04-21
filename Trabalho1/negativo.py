@@ -16,3 +16,12 @@ class Negativo:
                 neg_img[x, y] = (R, G, B)
         return neg_img
 
+    def negativoBrilho(self, np_img):
+        neg_img = np.zeros(np_img.shape)
+        for x in range(0, np_img.shape[0]):
+            for y in range(0, np_img.shape[1]):
+                Y = self.negativo(np_img[x, y][0])
+                I = np_img[x, y][1]
+                Q = np_img[x, y][2]
+                neg_img[x, y] = (Y, I, Q)
+        return neg_img

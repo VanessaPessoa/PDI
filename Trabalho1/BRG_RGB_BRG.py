@@ -5,9 +5,7 @@ class BRG_RGB_BRG:
         rgb = np.zeros(np_image.shape)
         for x in range(0, np_image.shape[0]):
             for y in range(0, np_image.shape[1]):
-                R = np_image[x, y][2]
-                G = np_image[x, y][1]
-                B = np_image[x, y][0]
+                (B, G, R) = np_image[x, y]
                 rgb[x, y] = (R, G, B)
         return rgb
 
@@ -15,8 +13,6 @@ class BRG_RGB_BRG:
         brg = np.zeros(np_image.shape)
         for x in range(0, np_image.shape[0]):
             for y in range(0, np_image.shape[1]):
-                R = np_image[x, y][0]
-                G = np_image[x, y][1]
-                B = np_image[x, y][2]
+                (R, G, B) = np_image[x, y]
                 brg[x, y] = (B, G, R)
         return brg
