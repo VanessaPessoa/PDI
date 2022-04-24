@@ -2,13 +2,13 @@ import numpy as np
 
 
 class RGB_YIQ_RGB:
-    def RGB_TO_YIQ(self, np_image):
+
+    @staticmethod
+    def RGB_TO_YIQ(np_image):
         yiq = np.zeros(np_image.shape)
         for x in range(0, np_image.shape[0]):
             for y in range(0, np_image.shape[1]):
-                R = np_image[x, y][0]
-                G = np_image[x, y][1]
-                B = np_image[x, y][2]
+                (R, G, B) = np_image[x, y]
 
                 Y = (0.299 * R) + (0.587 * G) + (0.114 * B)
                 I = (0.596 * R) - (0.274 * G) - (0.322 * B)
@@ -18,7 +18,8 @@ class RGB_YIQ_RGB:
 
         return yiq
 
-    def limit_pixelRGB(self, pixel):
+    @staticmethod
+    def limite_componente_rgb(pixel):
         if pixel > 255:
             return 255.0
 
@@ -27,17 +28,16 @@ class RGB_YIQ_RGB:
 
         return pixel
 
-    def YIQ_TO_RGB(self, np_image):
+    @staticmethod
+    def YIQ_TO_RGB(np_image):
         rgb = np.zeros(np_image.shape)
         for x in range(0, np_image.shape[0]):
             for y in range(0, np_image.shape[1]):
-                Y = np_image[x, y][0]
-                I = np_image[x, y][1]
-                Q = np_image[x, y][2]
+                (Y, I, Q) = np_image[x, y]
 
-                R = self.limit_pixelRGB((1 * Y) + (0.956 * I) + (0.621 * Q))
-                G = self.limit_pixelRGB((1 * Y) - (0.272 * I) - (0.647 * Q))
-                B = self.limit_pixelRGB((1 * Y) - (1.106 * I) + (1.703 * Q))
+                R = RGB_YIQ_RGB.limite_componente_rgb((1 * Y) + (0.956 * I) + (0.621 * Q))
+                G = RGB_YIQ_RGB.limite_componente_rgb((1 * Y) - (0.272 * I) - (0.647 * Q))
+                B = RGB_YIQ_RGB.limite_componente_rgb((1 * Y) - (1.106 * I) + (1.703 * Q))
 
                 rgb[x, y] = (R, G, B)
 
