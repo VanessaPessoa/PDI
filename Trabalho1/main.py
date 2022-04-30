@@ -11,15 +11,14 @@ convertNegativo = Negativo()
 correlacao = Correlacao()
 plt = PlotImg()
 
-
+# Carrega imagem em um np
 try:
     name_img = input("Informe a imagem a ser tratada:")
+    img_original = cv2.imread('Imagens/{}.png'.format(name_img))
+
 except:
     print("Imagem nao encontrada")
-    name_img = input("Informe a imagem a ser tratada:")
 
-# Carrega imagem em um np
-img_original = cv2.imread('Imagens/{}.png'.format(name_img))
 
 # Trocar para RGB
 img_color_rgb_original = convertRGB_BRG.troca_ordem(img_original)
