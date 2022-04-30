@@ -2,7 +2,7 @@
 Projetos da disciplina Introdução ao Processamento Digital de Imagens
 
 # Trabalho 1
-## Dependências
+### Dependências
 É necessário ter as seguintes dependencias:
  - opencv
  - matplotlib
@@ -11,5 +11,5 @@ Projetos da disciplina Introdução ao Processamento Digital de Imagens
  - pip install opencv-python
  - pip install matplotlib
 
-# Execução
+### Execução
 Basta rodar o arquivo main.py, Vai aparecer no terminal `Informe a imagem a ser tratada:`, colocar o nome da imagem que deseja aplicar os filtros, essa imagem precisa estar dentro da pasta `Imagens`. O resultados dos filtros ficarão salvos  na pasta de `Output`
