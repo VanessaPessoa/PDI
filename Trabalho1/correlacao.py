@@ -1,26 +1,30 @@
 import numpy as np
 
-class Correlacao:
+class Correlacao():  
 
-    def filtro_media_em_y(self, np_image_yiq, m, n):
+    def filtro_media_em_y(self, np_image_yiq, m, n, filtro):
         np_image_yiq_referencia = np_image_yiq.copy()
-        
+        resultado = np.zeros(np_image_yiq.shape)
         (largura, altura, *_) = np_image_yiq.shape
 
         for x in range(0, largura):
             for y in range(0, altura):
-                np_image_yiq[x, y] = self.calcular_media_y_em_pixel(
-                    np_image_yiq_referencia, 
-                    x,
-                    y,
-                    m,
-                    n,
-                    largura,
-                    altura)
+                if filtro ==  "calcular_media_y_em_pixel":
+                    resultado[x, y] = self.calcular_media_y_em_pixel(
+                        np_image_yiq_referencia, 
+                        x,
+                        y,
+                        m,
+                        n,
+                        largura,
+                        altura)
 
-        return np_image_yiq
+                else: 
+                    print("Filtro não implementado")
+
+        return resultado
     
-    def is_pixel_dentro_imagem(self, x, y, largura, altura) -> bool:
+    def is_pixel_dentro_imagem(self, x, y, largura, altura):
         if x >= 0 and x < largura and y >= 0 and y < altura:
             return True 
         return False 
