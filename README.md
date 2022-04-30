@@ -1,7 +1,8 @@
 # PDI
 Projetos da disciplina Introdução ao Processamento Digital de Imagens
 
-# Dependências
+# Trabalho 1
+## Dependências
 É necessário ter as seguintes dependencias:
  - opencv
  - matplotlib
