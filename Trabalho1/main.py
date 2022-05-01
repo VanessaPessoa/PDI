@@ -1,62 +1,38 @@
+from conversao.BGR_RGB import Troca
+from conversao.RGB_YIQ_RGB import RGB_YIQ_RGB
+from filtros.media import Media
+from filtros.sobel import FilterSobel
+from filtros.mediana import Mediana
+
 import cv2
-from RGB_YIQ_RGB import RGB_YIQ_RGB
-from BRG_RGB_BRG import BRG_RGB_BRG
-from correlacao import Correlacao
-from negativo import Negativo
-from plt_img import PlotImg
+import numpy as np
 
-convertRGB_BRG = BRG_RGB_BRG()
-convertRGB_YIQ = RGB_YIQ_RGB()
-convertNegativo = Negativo()
-correlacao = Correlacao()
-plt = PlotImg()
+convertRGB = Troca()
+convertYIQ = RGB_YIQ_RGB()
 
-# Carrega imagem em um np
-try:
-    name_img = input("Informe a imagem a ser tratada:")
-    img_original = cv2.imread('Imagens/{}.png'.format(name_img))
-
-except:
-    print("Imagem nao encontrada")
+path = 'C:/Users/vanes/Documents/estudos/PDI/Trabalho'
+name_img = input("Informe a imagem a ser tratada:")
+img_original = cv2.imread('{}/Imagens/{}'.format(path, name_img))
+img_original = convertRGB.troca_ordem(img_original)
 
 
-# Trocar para RGB
-img_color_rgb_original = convertRGB_BRG.troca_ordem(img_original)
+# Filtro media
+media = Media()
+img_filtrada_media = media.correlacao(img_original, 3, 3)
+img_filtro_media = '{}/Output/{}_filtro_media.png'.format(path,  name_img)
+cv2.imwrite(img_filtro_media, convertRGB.troca_ordem(img_filtrada_media))
 
-# funções com os filtros para correlacao 
-mascara = {
-    "mediana" : "calcular_media_y_em_pixel"
-}
+# Filtro Sobel
+sobel = FilterSobel()
+img_filtrada_sobel = sobel.apply_filter_sobel(img_original, 3, 3)
+img_filtro_sobel = '{}/Output/{}_filtro_sobel.png'.format(path,  name_img)
+cv2.imwrite(img_filtro_sobel, convertRGB.troca_ordem(img_filtrada_sobel))
 
-########## 1 Item - Conversão RGB-YIQ-RGB  ##########
-img_color_yiq = convertRGB_YIQ.RGB_TO_YIQ(img_color_rgb_original)
-cv2.imwrite('Output/{}_yiq.png'.format(name_img),
-            convertRGB_BRG.troca_ordem(img_color_yiq))
+# Filtro Mediana
+mediana = Mediana()
+img_yiq = convertYIQ.RGB_TO_YIQ(img_original)
+img_filtrada_mediana_yiq = mediana.filtro_mediana_em_y(img_yiq, 3, 3)
+img_filtrada_mediana_rgb = convertYIQ.YIQ_TO_RGB(img_filtrada_mediana_yiq)
+img_filtro_mediana = '{}/Output/{}_filtro_mediana.png'.format(path,  name_img)
+cv2.imwrite(img_filtro_mediana, convertRGB.troca_ordem(img_filtrada_mediana_rgb))
 
-img_color_rgb = convertRGB_YIQ.YIQ_TO_RGB(img_color_yiq)
-cv2.imwrite('Output/{}_yiq_to_rgb.png'.format(name_img),
-            convertRGB_BRG.troca_ordem(img_color_rgb))
-
-
-########## 2 Item - Negativo ##########
-plt.plt_img(img_original, "Original RGB")
-
-img_negativo_rgb = 'Output/{}_negativo_rgb.png'.format(name_img)
-negativo_rgb = convertNegativo.negativo_RGB(img_color_rgb_original)
-cv2.imwrite(img_negativo_rgb, convertRGB_BRG.troca_ordem(negativo_rgb))
-plt.plt_img(cv2.imread(img_negativo_rgb), "Negativo em RGB")
-
-
-img_negativo_Y = 'Output/{}_negativo_Y.png'.format(name_img)
-negativo_Y = convertNegativo.negativoBrilho(img_color_yiq)
-negativo_Y = convertRGB_YIQ.YIQ_TO_RGB(negativo_Y)
-cv2.imwrite(img_negativo_Y, convertRGB_BRG.troca_ordem(negativo_Y))
-plt.plt_img(cv2.imread(img_negativo_Y), "Negativo em Y")
-
-#  3 Item
-
-# 4 Item 
-filtro_mediana = correlacao.filtro_media_em_y(img_color_yiq, m=3, n=3, filtro = mascara["mediana"])
-filtro_mediana = convertRGB_YIQ.YIQ_TO_RGB(filtro_mediana)
-img_filtro_mediana = 'Output/{}_filtro_mediana.png'.format(name_img)
-cv2.imwrite(img_filtro_mediana, convertRGB_BRG.troca_ordem(filtro_mediana))
