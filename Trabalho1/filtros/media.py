@@ -1,40 +1,49 @@
-import cv2
-import numpy as np
+class MediaFilter:
 
-
-class Media:
     def isPar(self, m, n):
         modulo = (m * n) % 2
         return (1 if modulo == 0 else 0)
 
-    def filtro_media(self, m, n):
-        np_masc = np.full((m, n), 1 / (m*n))
-        return np_masc
+    def apply_filter_media(self, np_image_rgb, m, n):
+        np_image_rgb_reference = np_image_rgb.copy()
+        
+        (width, height, *_) = np_image_rgb.shape
 
-    def correlacao(self, np_img, m, n):
-        height = np_img.shape[0]
-        width = np_img.shape[1]
-        np_img_referencia = np_img.copy()
+        for x in range(0, width):
+            for y in range(0, height):
+                np_image_rgb_reference[x, y] = self.calculate_media(
+                    np_image_rgb, 
+                    x,
+                    y,
+                    m,
+                    n,
+                    width,
+                    height)
 
-        np_masc = self.filtro_media(m, n)
-        # Desliza pela imagem com a mascara
-        for x in range(0, height):
-            for y in range(0, width):
-                resultado = np.zeros(3, dtype=float)
-                contI = 0
-                for i in range(x - int(m/2), x + int(m/2) - self.isPar(m, n)):
-                    contJ = 0
-                    for j in range(y - int(n/2), y + int(n/2) - self.isPar(m, n)):
-                        # Verifica se pixel esta entre as bordas
-                        if(x < 0 or x >= height or y < 0 or y >= width):
-                            pass
-                        else:
-                            resultado[0] += np_masc[contI, contJ] * np_img[i, j][0]
-                            resultado[1] += np_masc[contI, contJ] * np_img[i, j][1]
-                            resultado[2] += np_masc[contI, contJ] * np_img[i, j][2]
-                        contJ = contJ + 1
-                    contI = contI + 1
+        return np_image_rgb_reference
 
-                np_img_referencia[x, y] = resultado
 
-        return np_img_referencia
+    def calculate_media(self, np_image_rgb, x, y, m, n, width, height):
+        somaR = 0
+        somaG = 0
+        somaB = 0
+
+        for i in range(x - int(m/2), x + int(m/2) - self.isPar(m, n)):
+            for j in range(y - int(n/2), y + int(n/2) - self.isPar(m, n)):
+                if self.is_pixel_inside_img(i, j, width, height):
+                    (R, G, B) = np_image_rgb[i, j]
+                    somaR += R
+                    somaG += G
+                    somaB += B
+                
+       
+        mediaR = somaR / (m*n)
+        mediaG = somaG / (m*n)
+        mediaB = somaB / (m*n)
+
+        return (mediaR, mediaG, mediaB)
+
+    def is_pixel_inside_img(self, x, y, width, height):
+        if x >= 0 and x < width and y >= 0 and y < height:
+            return True 
+        return False 
