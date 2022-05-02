@@ -17,36 +17,29 @@ class Normalizada:
         npg_img = self._gray_scale(np_img)
         
         npg_masc = self._gray_scale(np_masc)
-        npg_masc = self._rebater_img(npg_masc)
 
         media_masc = self._media_pearson_simplificada(npg_masc)
         mascara = self._correlacao_normalizada_simplificado(npg_masc, media_masc)
 
-        maior_correl_pos = -1
-        maior_correl_neg = 1
+        maior_correlacao = -2
 
-        px_correl_pos = 0
-        py_correl_pos = 0
-        px_correl_neg = 0
-        py_correl_neg = 0
+        px_mais_correlato = 0
+        py_mais_correlato = 0
+        px_seg_mais_correlato = 0
+        py_seg_mais_correlato = 0
 
         # Desliza pela imagem com a mascara
-        for x in range(0, height):
+        for x in range(m, height):
 
             print("Linha: " + str(x))
             rangeImin = x - int(m/2)
             rangeIMax = x + int(m/2) - self.isPar(m, n)
-            for y in range(0, width):
+            for y in range(n, width):
                 rangeJmin = y - int(n/2)
                 rangeJMax = y + int(n/2) - self.isPar(m, n)
 
-                contI = 0
-
                 for i in range(rangeImin, rangeIMax):
-
-                    contJ = 0
-                    ultima_correlacao = 0
-
+                    ultima_correlacao = -1
                     for j in range(rangeJmin, rangeJMax):
                         # Verifica se pixel esta entre as bordas
                         if(x < 0 or x >= height or y < 0 or y >= width or
@@ -56,21 +49,15 @@ class Normalizada:
                             media_img = self._media_pearson(npg_img, i, j, m, n)
                             ultima_correlacao = self._correlacao_normalizada(npg_img, i, j, m, n, media_img) * mascara
 
-                            if(ultima_correlacao > maior_correl_pos):
-                                maior_correl_pos = ultima_correlacao
-                                px_correl_pos = j 
-                                py_correl_pos = i
-                            if(ultima_correlacao < maior_correl_neg):
-                                maior_correl_neg = ultima_correlacao
-                                px_correl_neg = j
-                                py_correl_neg = i
-
-                        contJ = contJ + 1
-                    contI = contI + 1
-
-        return self._destacar_correlacao(np_img, px_correl_pos, py_correl_pos, px_correl_neg, py_correl_neg, m, n)
-
-
+                            if(ultima_correlacao > maior_correlacao):
+                                px_seg_mais_correlato = px_mais_correlato
+                                py_seg_mais_correlato = py_mais_correlato
+                                maior_correlacao = ultima_correlacao
+                                px_mais_correlato = i 
+                                py_mais_correlato = j
+                                print("Correlacao: " + str(ultima_correlacao))
+        print("Maior correlacao: " + str(maior_correlacao))
+        return self._destacar_correlacao(np_img, px_mais_correlato, py_mais_correlato, px_seg_mais_correlato, py_seg_mais_correlato, m, n)
     
     def _rebater_img(self, np_img):
         height = np_img.shape[0]
@@ -145,6 +132,7 @@ class Normalizada:
         return self._correlacao_normalizada(img, int(height/2), int(width/2), height, width, media)
 
     def _destacar_correlacao(self, np_img, px, py, nx, ny, m, n):
+        print("px: " + str(px) + " py: " + str(py) + " nx: " + str(nx) + " ny: " + str(ny))
         np_img_referencia = np_img.copy()
         for i in range(px - int(m/2), int(m/2) - self.isPar(m, n) + px):
             for j in range(py - int(n/2), int(n/2) - self.isPar(m, n) + py):
@@ -153,12 +141,12 @@ class Normalizada:
                      (i > 0 and i < np_img.shape[0] and j > 0 and j < np_img.shape[1])):
                     print("i: " + str(i) + " j: " + str(j))
                     np_img_referencia[i, j] = (0, 0, 255)
-        
+        '''
         for i in range(nx - int(m/2), nx + int(m/2) - self.isPar(m, n)):
             for j in range(ny - int(n/2), int(n/2) - self.isPar(m, n) + ny):
                 if (((i == nx - int(m/2) or i == nx + (int(m/2) - self.isPar(m, n) - 1)) or 
                      (j == ny - int(n/2) or j == ny + (int(n/2) - self.isPar(m, n) - 1))) and
                      (i > 0 and i < np_img.shape[0] and j > 0 and j < np_img.shape[1])):
                     np_img_referencia[i, j] = (255, 0, 0)
-
+        '''
         return np_img_referencia
